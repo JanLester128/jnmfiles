@@ -302,13 +302,23 @@ export default function FileGridCard({
                     {file.name}
                 </h4>
 
-                <div className="flex items-center justify-between text-xs text-muted-foreground mt-1.5">
+                <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground mt-1.5">
                     <span>{file.formatted_size || `${(file.size_bytes / 1024).toFixed(1)} KB`}</span>
-                    {file.project && (
-                        <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-muted/90 font-medium">
-                            {file.project.code}
-                        </span>
-                    )}
+                    <div className="flex items-center gap-1 min-w-0">
+                        {file.folder && (
+                            <span
+                                className="truncate max-w-[120px] text-[10px] px-1.5 py-0.5 rounded bg-muted/90 font-medium"
+                                title={file.folder.name}
+                            >
+                                {file.folder.name}
+                            </span>
+                        )}
+                        {file.project && (
+                            <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-muted/90 font-medium">
+                                {file.project.code}
+                            </span>
+                        )}
+                    </div>
                 </div>
 
                 {/* Tags */}

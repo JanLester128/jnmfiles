@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { notifyMascot } from '@/lib/mascot';
 import type { FileItem, FileVersion } from '@/types/file-management';
 
 interface VersionHistoryModalProps {
@@ -70,7 +71,11 @@ export default function VersionHistoryModal({ file, isOpen, onClose }: VersionHi
 
         router.post(`/files/${file.id}/versions`, formData, {
             onSuccess: () => {
-                toast.success('New revision uploaded successfully');
+                notifyMascot({
+                    variant: 'success',
+                    title: 'Revision uploaded!',
+                    message: `A new version of '${file?.name ?? 'your file'}' was uploaded successfully.`,
+                });
                 setNewRevisionFile(null);
                 setChangelog('');
                 setIsUploading(false);
@@ -182,9 +187,8 @@ export default function VersionHistoryModal({ file, isOpen, onClose }: VersionHi
                                 return (
                                     <div
                                         key={ver.id}
-                                        className={`p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
-                                            isCurrent ? 'bg-emerald-500/5 dark:bg-emerald-950/20' : ''
-                                        }`}
+                                        className={`p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${isCurrent ? 'bg-emerald-500/5 dark:bg-emerald-950/20' : ''
+                                            }`}
                                     >
                                         <div className="space-y-1 min-w-0 flex-1">
                                             <div className="flex items-center gap-2 flex-wrap">

@@ -161,7 +161,11 @@ class DriveController extends Controller
                         }
                     } else {
                         $foldersQuery->whereNull('parent_id')->whereNull('project_id');
-                        $filesQuery->whereNull('folder_id')->whereNull('project_id');
+                        if (! $isAdmin && $lockedFolderIds !== []) {
+                            $filesQuery->where(function ($q) use ($lockedFolderIds) {
+                                $q->whereNull('folder_id')->orWhereNotIn('folder_id', $lockedFolderIds);
+                            });
+                        }
                     }
                 }
             }

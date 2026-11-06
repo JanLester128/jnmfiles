@@ -531,5 +531,11 @@ class FileManagementTest extends TestCase
         $this->assertEquals(1, $stats['locked_files']);
         $this->assertEquals(2, $stats['locked_by_admin']);
         $this->assertEquals(1, $stats['unlocked_folders']);
+
+        // Verify My Files root page returns all accessible files (including files inside unlocked folders)
+        $driveResponse = $this->actingAs($employee)->get(route('drive.index'));
+        $driveResponse->assertOk();
+        $driveFiles = $driveResponse->viewData('page')['props']['files'];
+        $this->assertCount(2, $driveFiles);
     }
 }

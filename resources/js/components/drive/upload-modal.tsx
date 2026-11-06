@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { notifyMascot } from '@/lib/mascot';
 
 interface UploadModalProps {
     isOpen: boolean;
@@ -77,11 +78,25 @@ export default function UploadModal({
         }
 
         router.post('/files/upload', formData, {
-            onSuccess: () => {
-                toast.success(`Successfully uploaded ${selectedFiles.length} file(s)`);
+            onSuccess: (page) => {
+                const flash = (page.props as any).flash as { success?: string; error?: string } | undefined;
+                setIsUploading(false);
+
+                // A locked-folder rejection redirects back with an error flash (shown by the page).
+                if (flash?.error) {
+                    return;
+                }
+
+                const uploadedCount = selectedFiles.length;
+                notifyMascot({
+                    variant: 'success',
+                    title: uploadedCount === 1 ? 'File uploaded!' : 'Files uploaded!',
+                    message:
+                        flash?.success ??
+                        `Successfully uploaded ${uploadedCount} file(s)${currentFolderName ? ` to ${currentFolderName}` : ''}.`,
+                });
                 setSelectedFiles([]);
                 setDescription('');
-                setIsUploading(false);
                 onClose();
             },
             onError: (errors) => {

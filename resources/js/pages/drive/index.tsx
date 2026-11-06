@@ -1,5 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
 import {
+    ChevronDown,
+    ChevronUp,
     Folder,
     FolderPlus,
     FolderTree,
@@ -81,6 +83,9 @@ export default function DrivePage({
     const [moveItem, setMoveItem] = useState<{ item: FileItem | FolderItem; type: 'file' | 'folder' } | null>(null);
     const [renameItem, setRenameItem] = useState<{ item: FileItem | FolderItem; type: 'file' | 'folder' } | null>(null);
     const [lockedItemAlert, setLockedItemAlert] = useState<{ name: string; type: 'file' | 'folder'; reason?: string | null } | null>(null);
+    const [showAllFiles, setShowAllFiles] = useState(false);
+
+    const visibleFiles = showAllFiles ? files : [];
 
     useEffect(() => {
         if (flash?.error) {
@@ -136,14 +141,16 @@ export default function DrivePage({
                     </div>
                 </div>
 
-                {/* Breadcrumb bar */}
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                    <BreadcrumbNav
-                        currentFolder={currentFolder}
-                        currentProject={currentProject}
-                        breadcrumbs={breadcrumbs}
-                    />
-                </div>
+                {/* Breadcrumb bar (only shown when inside a folder or project) */}
+                {(currentProject || breadcrumbs.length > 0) && (
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                        <BreadcrumbNav
+                            currentFolder={currentFolder}
+                            currentProject={currentProject}
+                            breadcrumbs={breadcrumbs}
+                        />
+                    </div>
+                )}
 
                 {/* Toolbar */}
                 <Toolbar
@@ -209,21 +216,52 @@ export default function DrivePage({
                         )}
                     </div>
                 ) : isListView ? (
-                    <FileListTable
-                        folders={folders}
-                        files={files}
-                        onPreview={(f) => setPreviewFile(f)}
-                        onVersions={(f) => setVersionFile(f)}
-                        onUploadRevision={(f) => setVersionFile(f)}
-                        onShareFile={(f) => setShareItem({ item: f, type: 'file' })}
-                        onShareFolder={(fol) => setShareItem({ item: fol, type: 'folder' })}
-                        onMoveFile={(f) => setMoveItem({ item: f, type: 'file' })}
-                        onMoveFolder={(fol) => setMoveItem({ item: fol, type: 'folder' })}
-                        onRenameFile={(f) => setRenameItem({ item: f, type: 'file' })}
-                        onRenameFolder={(fol) => setRenameItem({ item: fol, type: 'folder' })}
-                        onLockedFolderClick={(fol) => setLockedItemAlert({ name: fol.name, type: 'folder', reason: fol.lock_reason })}
-                        onLockedFileClick={(f) => setLockedItemAlert({ name: f.name, type: 'file', reason: f.lock_note })}
-                    />
+                    <div className="space-y-4">
+                        {files.length > 0 && (
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                                    <HardDrive className="size-3.5 text-emerald-600" />
+                                    <span>All Files ({files.length})</span>
+                                </h3>
+
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setShowAllFiles((prev) => !prev)}
+                                    className="h-7 px-2.5 text-xs gap-1.5 border-emerald-600/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
+                                >
+                                    {showAllFiles ? (
+                                        <>
+                                            <ChevronUp className="size-3.5 text-emerald-600" />
+                                            <span>Show Less</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ChevronDown className="size-3.5 text-emerald-600" />
+                                            <span>Show All Files</span>
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                        )}
+
+                        <FileListTable
+                            folders={folders}
+                            files={visibleFiles}
+                            onPreview={(f) => setPreviewFile(f)}
+                            onVersions={(f) => setVersionFile(f)}
+                            onUploadRevision={(f) => setVersionFile(f)}
+                            onShareFile={(f) => setShareItem({ item: f, type: 'file' })}
+                            onShareFolder={(fol) => setShareItem({ item: fol, type: 'folder' })}
+                            onMoveFile={(f) => setMoveItem({ item: f, type: 'file' })}
+                            onMoveFolder={(fol) => setMoveItem({ item: fol, type: 'folder' })}
+                            onRenameFile={(f) => setRenameItem({ item: f, type: 'file' })}
+                            onRenameFolder={(fol) => setRenameItem({ item: fol, type: 'folder' })}
+                            onLockedFolderClick={(fol) => setLockedItemAlert({ name: fol.name, type: 'folder', reason: fol.lock_reason })}
+                            onLockedFileClick={(f) => setLockedItemAlert({ name: f.name, type: 'file', reason: f.lock_note })}
+                        />
+                    </div>
                 ) : (
                     <div className="space-y-6">
                         {folders.length > 0 && (
@@ -251,25 +289,50 @@ export default function DrivePage({
 
                         {files.length > 0 && (
                             <div className="space-y-2.5">
-                                <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                                    <HardDrive className="size-3.5 text-emerald-600" />
-                                    <span>All Files ({files.length})</span>
-                                </h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                    {files.map((file) => (
-                                        <FileGridCard
-                                            key={file.id}
-                                            file={file}
-                                            onPreview={(f) => setPreviewFile(f)}
-                                            onVersions={(f) => setVersionFile(f)}
-                                            onUploadRevision={(f) => setVersionFile(f)}
-                                            onShare={(f) => setShareItem({ item: f, type: 'file' })}
-                                            onMove={(f) => setMoveItem({ item: f, type: 'file' })}
-                                            onRename={(f) => setRenameItem({ item: f, type: 'file' })}
-                                            onLockedClick={(f) => setLockedItemAlert({ name: f.name, type: 'file', reason: f.lock_note })}
-                                        />
-                                    ))}
+                                <div className="flex items-center justify-between gap-2 flex-wrap">
+                                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                                        <HardDrive className="size-3.5 text-emerald-600" />
+                                        <span>All Files ({files.length})</span>
+                                    </h3>
+
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setShowAllFiles((prev) => !prev)}
+                                        className="h-7 px-2.5 text-xs gap-1.5 border-emerald-600/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
+                                    >
+                                        {showAllFiles ? (
+                                            <>
+                                                <ChevronUp className="size-3.5 text-emerald-600" />
+                                                <span>Show Less</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ChevronDown className="size-3.5 text-emerald-600" />
+                                                <span>Show All Files</span>
+                                            </>
+                                        )}
+                                    </Button>
                                 </div>
+
+                                {showAllFiles && (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                        {files.map((file) => (
+                                            <FileGridCard
+                                                key={file.id}
+                                                file={file}
+                                                onPreview={(f) => setPreviewFile(f)}
+                                                onVersions={(f) => setVersionFile(f)}
+                                                onUploadRevision={(f) => setVersionFile(f)}
+                                                onShare={(f) => setShareItem({ item: f, type: 'file' })}
+                                                onMove={(f) => setMoveItem({ item: f, type: 'file' })}
+                                                onRename={(f) => setRenameItem({ item: f, type: 'file' })}
+                                                onLockedClick={(f) => setLockedItemAlert({ name: f.name, type: 'file', reason: f.lock_note })}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

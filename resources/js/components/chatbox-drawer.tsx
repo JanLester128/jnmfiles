@@ -140,9 +140,10 @@ export function ChatboxDrawer() {
     const currentUser = pageProps.auth?.user;
     const isAdmin = Boolean(pageProps.auth?.isAdmin || currentUser?.role === 'admin');
     const initialUnread = Number(pageProps.auth?.unreadMessagesCount ?? 0);
+    const initialContacts = (pageProps.auth?.chatContacts ?? []) as ChatContact[];
 
     const [isOpen, setIsOpen] = useState(false);
-    const [contacts, setContacts] = useState<ChatContact[]>([]);
+    const [contacts, setContacts] = useState<ChatContact[]>(initialContacts);
     const [broadcast, setBroadcast] = useState<BroadcastSummary>({
         unread_count: 0,
         last_message: null,
@@ -150,7 +151,9 @@ export function ChatboxDrawer() {
     const [totalUnread, setTotalUnread] = useState<number>(initialUnread);
 
     const [activeMode, setActiveMode] = useState<'direct' | 'broadcast'>('direct');
-    const [selectedContactId, setSelectedContactId] = useState<number | null>(null);
+    const [selectedContactId, setSelectedContactId] = useState<number | null>(
+        initialContacts.length > 0 ? initialContacts[0].id : null,
+    );
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
 
@@ -172,6 +175,15 @@ export function ChatboxDrawer() {
     useEffect(() => {
         setTotalUnread(initialUnread);
     }, [initialUnread]);
+
+    useEffect(() => {
+        if (initialContacts.length > 0 && contacts.length === 0) {
+            setContacts(initialContacts);
+            if (!selectedContactId) {
+                setSelectedContactId(initialContacts[0].id);
+            }
+        }
+    }, [initialContacts, contacts.length, selectedContactId]);
 
     const scrollToBottom = useCallback(() => {
         requestAnimationFrame(() => {
@@ -504,9 +516,23 @@ export function ChatboxDrawer() {
                                 </div>
 
                                 {filteredContacts.length === 0 ? (
-                                    <p className="px-2 py-4 text-center text-xs text-muted-foreground">
-                                        No matching team members found.
-                                    </p>
+                                    <div className="px-2.5 py-4 text-center text-xs text-muted-foreground space-y-2">
+                                        <p>
+                                            {contacts.length === 0
+                                                ? 'No other user accounts exist in this database yet.'
+                                                : 'No matching team members found.'}
+                                        </p>
+                                        {contacts.length === 0 && isAdmin && (
+                                            <Link
+                                                href="/team"
+                                                onClick={() => setIsOpen(false)}
+                                                className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-emerald-500"
+                                            >
+                                                <Users className="size-3" />
+                                                <span>Add Employee Accounts</span>
+                                            </Link>
+                                        )}
+                                    </div>
                                 ) : (
                                     filteredContacts.map((contact) => {
                                         const isSelected =

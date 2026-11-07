@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 
 class MessageController extends Controller
 {
@@ -24,10 +25,44 @@ class MessageController extends Controller
         $channel = $request->query('channel'); // 'broadcast' or null
 
         $lockedFolderIds = $isAdmin ? [] : Folder::allLockedFolderIds();
+        $hasMessagesTable = Schema::hasTable('messages');
+
+        // Load all active users (plus any where is_active is null)
+        $contacts = User::where('id', '!=', $user->id)
+            ->where(function ($query) {
+                $query->where('is_active', true)->orWhereNull('is_active');
+            })
+            ->orderByDesc('role')
+            ->orderBy('name')
+            ->get(['id', 'name', 'email', 'role', 'department', 'title', 'avatar']);
+
+        if (! $hasMessagesTable) {
+            return response()->json([
+                'contacts' => $contacts->map(fn (User $contact) => [
+                    'id' => $contact->id,
+                    'name' => $contact->name,
+                    'email' => $contact->email,
+                    'role' => $contact->role,
+                    'department' => $contact->department,
+                    'title' => $contact->title,
+                    'avatar' => $contact->avatar,
+                    'unread_count' => 0,
+                    'last_message' => null,
+                ])->values(),
+                'broadcast' => [
+                    'unread_count' => 0,
+                    'last_message' => null,
+                ],
+                'total_unread' => 0,
+                'messages' => [],
+            ]);
+        }
 
         // Mark messages as read if viewing a specific contact or broadcast channel
         if ($channel === 'broadcast') {
-            $user->forceFill(['last_seen_broadcast_at' => now()])->saveQuietly();
+            if (Schema::hasColumn('users', 'last_seen_broadcast_at')) {
+                $user->forceFill(['last_seen_broadcast_at' => now()])->saveQuietly();
+            }
         } elseif ($contactId && is_numeric($contactId)) {
             Message::where('sender_id', (int) $contactId)
                 ->where('recipient_id', $user->id)
@@ -35,13 +70,6 @@ class MessageController extends Controller
                 ->whereNull('read_at')
                 ->update(['read_at' => now()]);
         }
-
-        // Load all active users (plus any inactive ones with message history)
-        $contacts = User::where('id', '!=', $user->id)
-            ->where('is_active', true)
-            ->orderByDesc('role')
-            ->orderBy('name')
-            ->get(['id', 'name', 'email', 'role', 'department', 'title', 'avatar']);
 
         // Unread counts per sender for the current user
         $unreadBySender = Message::where('recipient_id', $user->id)

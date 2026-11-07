@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import inertia from '@inertiajs/vite';
 import { wayfinder } from '@laravel/vite-plugin-wayfinder';
 import babel from '@rolldown/plugin-babel';
@@ -6,6 +7,11 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import { defineConfig, lazyPlugins } from 'vite-plus';
+
+const nexdbPhp = 'C:\\NexDB\\bin\\php\\php-8.5.12\\php.exe';
+const wayfinderCommand = fs.existsSync(nexdbPhp)
+    ? `${nexdbPhp} -d extension_dir="C:/NexDB/bin/php/php-8.5.12/ext" -d extension=pdo_mysql -d extension=mysqli -d extension=mbstring -d extension=openssl -d extension=fileinfo artisan wayfinder:generate --with-form`
+    : 'php artisan wayfinder:generate --with-form';
 
 export default defineConfig({
     plugins: lazyPlugins(() => [
@@ -26,7 +32,7 @@ export default defineConfig({
         tailwindcss(),
         wayfinder({
             formVariants: true,
-            command: 'C:\\NexDB\\bin\\php\\php-8.5.12\\php.exe -d extension_dir="C:/NexDB/bin/php/php-8.5.12/ext" -d extension=pdo_mysql -d extension=mysqli -d extension=mbstring -d extension=openssl -d extension=fileinfo artisan wayfinder:generate --with-form',
+            command: wayfinderCommand,
         }),
     ]),
     server: {

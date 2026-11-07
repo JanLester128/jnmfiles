@@ -30,5 +30,20 @@ class DatabaseSeeder extends Seeder
                 'is_active' => true,
             ]
         );
+
+        User::updateOrCreate(
+            ['email' => 'Employee'],
+            [
+                'name' => 'Survey Staff',
+                'password' => Hash::make('employee123'),
+                'role' => 'employee',
+                'department' => 'Land Surveying Operations',
+                'title' => 'Geodetic Survey Staff',
+                'email_verified_at' => now(),
+                'storage_limit_bytes' => 536870912000, // 500 GB
+                'storage_used_bytes' => 0,
+                'is_active' => true,
+            ]
+        );
     }
 }

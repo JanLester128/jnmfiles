@@ -2,6 +2,7 @@ import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
+import { ChatboxDrawer } from '@/components/chatbox-drawer';
 import { SurveyorMascot } from '@/components/surveyor-mascot';
 import type { AppLayoutProps } from '@/types';
 
@@ -17,6 +18,7 @@ export default function AppSidebarLayout({
                 {children}
             </AppContent>
             <SurveyorMascot />
+            <ChatboxDrawer />
         </AppShell>
     );
 }

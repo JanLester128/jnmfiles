@@ -26,6 +26,7 @@ export default defineConfig({
         tailwindcss(),
         wayfinder({
             formVariants: true,
+            command: 'C:\\NexDB\\bin\\php\\php-8.5.12\\php.exe -d extension_dir="C:/NexDB/bin/php/php-8.5.12/ext" -d extension=pdo_mysql -d extension=mysqli -d extension=mbstring -d extension=openssl -d extension=fileinfo artisan wayfinder:generate --with-form',
         }),
     ]),
     server: {

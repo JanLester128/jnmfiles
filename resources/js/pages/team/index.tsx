@@ -4,6 +4,7 @@ import {
     CheckCircle2,
     Edit2,
     KeyRound,
+    MessageSquare,
     Search,
     ShieldCheck,
     UserCheck,
@@ -12,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { openChatDrawer } from '@/components/chatbox-drawer';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -300,6 +302,18 @@ export default function TeamIndex({ team }: TeamPageProps) {
 
                                         <td className="py-3.5 px-4 text-right">
                                             <div className="flex items-center justify-end gap-2">
+                                                {!isSelf && (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => openChatDrawer({ contactId: member.id })}
+                                                        className="h-8 text-xs gap-1 border-emerald-500/40 text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950/40"
+                                                    >
+                                                        <MessageSquare className="size-3.5" />
+                                                        <span>Message</span>
+                                                    </Button>
+                                                )}
+
                                                 {!isSelf && (
                                                     <Button
                                                         size="sm"

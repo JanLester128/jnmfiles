@@ -7,6 +7,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\FileVersionController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TeamController;
@@ -85,6 +86,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Activities & Audit
     Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
+
+    // Staff & Admin Chat / Messaging Drawer
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+    Route::post('/messages/read', [MessageController::class, 'markRead'])->name('messages.read');
+    Route::get('/messages/drive-items', [MessageController::class, 'driveItems'])->name('messages.drive-items');
 });
 
 require __DIR__.'/settings.php';

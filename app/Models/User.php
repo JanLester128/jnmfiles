@@ -51,6 +51,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
     'storage_used_bytes',
     'is_active',
     'appearance',
+    'last_seen_broadcast_at',
 ])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
@@ -72,6 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'is_active' => 'boolean',
             'storage_limit_bytes' => 'integer',
             'storage_used_bytes' => 'integer',
+            'last_seen_broadcast_at' => 'datetime',
         ];
     }
 
@@ -115,6 +117,16 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function accessPermissions(): HasMany
     {
         return $this->hasMany(AccessPermission::class);
+    }
+
+    public function sentMessages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'recipient_id');
     }
 
     public function roleEnum(): UserRole

@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -36,6 +38,23 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
+        $unreadMessagesCount = 0;
+
+        if ($user && Schema::hasTable('messages')) {
+            $directUnread = Message::where('recipient_id', $user->id)
+                ->where('is_broadcast', false)
+                ->whereNull('read_at')
+                ->count();
+
+            $broadcastUnreadQuery = Message::where('is_broadcast', true)
+                ->where('sender_id', '!=', $user->id);
+
+            if ($user->last_seen_broadcast_at) {
+                $broadcastUnreadQuery->where('created_at', '>', $user->last_seen_broadcast_at);
+            }
+
+            $unreadMessagesCount = $directUnread + $broadcastUnreadQuery->count();
+        }
 
         return [
             ...parent::share($request),
@@ -43,6 +62,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user,
                 'isAdmin' => $user ? $user->isAdmin() : false,
+                'unreadMessagesCount' => $unreadMessagesCount,
             ],
             'appearance' => $user ? ($user->appearance ?? 'light') : 'light',
             'flash' => [

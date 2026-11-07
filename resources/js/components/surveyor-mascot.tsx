@@ -118,7 +118,7 @@ export function SurveyorMascot() {
 
     return (
         <div
-            className={`pointer-events-none fixed right-3 bottom-2 z-40 flex items-end gap-2 transition-all duration-350 sm:right-5 sm:bottom-3 print:hidden ${
+            className={`pointer-events-none fixed right-3 bottom-16 z-40 flex items-end gap-2 transition-all duration-350 sm:right-5 sm:bottom-20 print:hidden ${
                 isClosing
                     ? 'translate-y-8 scale-90 opacity-0'
                     : 'translate-y-0 scale-100 opacity-100 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-6 motion-safe:duration-300'

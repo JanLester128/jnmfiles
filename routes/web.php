@@ -11,6 +11,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\WorkLogController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to dashboard (requires login)
@@ -86,6 +87,15 @@ Route::middleware(['auth'])->group(function () {
 
     // Activities & Audit
     Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
+
+    // Work Logs
+    Route::get('/work-logs', [WorkLogController::class, 'index'])->name('work-logs.index');
+    Route::get('/work-logs/print-queue', [WorkLogController::class, 'printQueue'])->name('work-logs.print-queue');
+    Route::post('/work-logs', [WorkLogController::class, 'store'])->name('work-logs.store');
+    Route::post('/work-logs/{workLog}/send-to-print', [WorkLogController::class, 'sendToPrint'])->name('work-logs.send-to-print');
+    Route::delete('/work-logs/{workLog}/print-queue', [WorkLogController::class, 'removeFromPrintQueue'])->name('work-logs.remove-from-print');
+    Route::put('/work-logs/{workLog}', [WorkLogController::class, 'update'])->name('work-logs.update');
+    Route::delete('/work-logs/{workLog}', [WorkLogController::class, 'destroy'])->name('work-logs.destroy');
 
     // Staff & Admin Chat / Messaging Drawer
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');

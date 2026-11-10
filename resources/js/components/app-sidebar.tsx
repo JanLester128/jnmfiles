@@ -1,7 +1,9 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
+    ClipboardList,
     FolderOpen,
     LayoutDashboard,
+    Printer,
     ShieldCheck,
     Star,
     Trash2,
@@ -41,6 +43,18 @@ export function AppSidebar() {
             active: url.startsWith('/drive') && !url.includes('starred=') && !url.includes('trashed='),
         },
         {
+            href: '/work-logs',
+            label: 'Work Logs',
+            icon: ClipboardList,
+            active: url === '/work-logs' || (url.startsWith('/work-logs') && !url.startsWith('/work-logs/print-queue')),
+        },
+        {
+            href: '/work-logs/print-queue',
+            label: 'TO PRINT / PRINTED',
+            icon: Printer,
+            active: url.startsWith('/work-logs/print-queue'),
+        },
+        {
             href: '/team',
             label: 'Employee Accounts',
             icon: Users,
@@ -72,6 +86,18 @@ export function AppSidebar() {
             label: 'My Files',
             icon: FolderOpen,
             active: url.startsWith('/drive') && !url.includes('starred=') && !url.includes('trashed='),
+        },
+        {
+            href: '/work-logs',
+            label: 'Work Logs',
+            icon: ClipboardList,
+            active: url === '/work-logs' || (url.startsWith('/work-logs') && !url.startsWith('/work-logs/print-queue')),
+        },
+        {
+            href: '/work-logs/print-queue',
+            label: 'TO PRINT / PRINTED',
+            icon: Printer,
+            active: url.startsWith('/work-logs/print-queue'),
         },
         {
             href: '/drive?starred=1',

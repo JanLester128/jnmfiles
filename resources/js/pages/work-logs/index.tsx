@@ -430,36 +430,15 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
     const inProgressCount = workLogs.filter((l) => l.progress_status.toLowerCase() === 'in progress').length;
     const pendingCount = workLogs.filter((l) => l.progress_status.toLowerCase() === 'pending').length;
     const pausedOrOtherCount = totalCount - completedCount - inProgressCount - pendingCount;
-    const printQueueCount = workLogs.filter((l) => Boolean(l.print_status)).length;
 
     return (
         <>
             <Head title="Work Logs" />
 
             <div className="flex flex-col gap-5 p-4 md:p-6 max-w-[1650px] mx-auto w-full">
-                {/* Page Header & TO PRINT / PRINTED Switcher */}
+                {/* Page Header */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
-                        <div className="inline-flex items-center rounded-lg border border-border bg-muted/50 p-1 mb-2.5">
-                            <Link
-                                href="/work-logs"
-                                className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-2xs"
-                            >
-                                <ClipboardList className="size-3.5" />
-                                <span>Work Logs</span>
-                            </Link>
-                            <Link
-                                href="/work-logs/print-queue"
-                                className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                                <Printer className="size-3.5" />
-                                <span>TO PRINT / PRINTED</span>
-                                <span className="ml-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.2 text-[10px] font-bold">
-                                    {printQueueCount}
-                                </span>
-                            </Link>
-                        </div>
-
                         <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
                             <ClipboardList className="size-6 text-emerald-600" />
                             <span>Work Logs</span>

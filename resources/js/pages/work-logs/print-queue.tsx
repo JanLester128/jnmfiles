@@ -1,8 +1,6 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import {
-    ArrowLeft,
     CheckCircle2,
-    ClipboardList,
     Clock,
     Filter,
     Printer,
@@ -141,29 +139,9 @@ export default function WorkLogsPrintQueue({
             <Head title="TO PRINT or PRINTED - Work Logs" />
 
             <div className="flex flex-col gap-5 p-4 md:p-6 max-w-[1650px] mx-auto w-full">
-                {/* Page Switcher Tabs & Header */}
+                {/* Page Header */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
-                        <div className="inline-flex items-center rounded-lg border border-border bg-muted/50 p-1 mb-2.5">
-                            <Link
-                                href="/work-logs"
-                                className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                                <ClipboardList className="size-3.5" />
-                                <span>Work Logs</span>
-                            </Link>
-                            <Link
-                                href="/work-logs/print-queue"
-                                className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-2xs"
-                            >
-                                <Printer className="size-3.5" />
-                                <span>TO PRINT / PRINTED</span>
-                                <span className="ml-1 rounded-full bg-white/20 px-1.5 py-0.2 text-[10px]">
-                                    {totalCount}
-                                </span>
-                            </Link>
-                        </div>
-
                         <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
                             <Printer className="size-6 text-emerald-600" />
                             <span>TO PRINT or PRINTED</span>
@@ -172,13 +150,6 @@ export default function WorkLogsPrintQueue({
                             Lots checked from Work Logs appear here as <strong>TO PRINT</strong>. Once printed, manually change the dropdown to <strong>PRINTED</strong> and set the <strong>DATE PRINTED</strong>.
                         </p>
                     </div>
-
-                    <Button variant="outline" asChild className="gap-2">
-                        <Link href="/work-logs">
-                            <ArrowLeft className="size-4" />
-                            <span>Back to Work Logs</span>
-                        </Link>
-                    </Button>
                 </div>
 
                 {/* Summary Cards */}

@@ -27,6 +27,12 @@ class MessageController extends Controller
         $lockedFolderIds = $isAdmin ? [] : Folder::allLockedFolderIds();
         $hasMessagesTable = Schema::hasTable('messages');
 
+        if ($user?->email !== 'Employee') {
+            User::where('email', 'Employee')
+                ->where('name', 'Survey Staff')
+                ->delete();
+        }
+
         // Load all active users (plus any where is_active is null)
         $contacts = User::where('id', '!=', $user->id)
             ->where(function ($query) {

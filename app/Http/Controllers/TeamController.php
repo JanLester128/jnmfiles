@@ -21,6 +21,11 @@ class TeamController extends Controller
     {
         abort_unless($request->user()?->isAdmin(), 403, 'Only administrators can manage employee accounts.');
 
+        // Ensure the old default seeded staff account is removed so only Admin-created staff exist
+        User::where('email', 'Employee')
+            ->where('name', 'Survey Staff')
+            ->delete();
+
         $users = User::withCount(['projects', 'assignedProjects', 'files'])
             ->orderByDesc('role')
             ->orderBy('name')

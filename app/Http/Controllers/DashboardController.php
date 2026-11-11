@@ -23,6 +23,14 @@ class DashboardController extends Controller
     {
         $user = $request->user();
         $isAdmin = (bool) $user?->isAdmin();
+
+        // Ensure the old default seeded staff account is removed so only Admin-created staff exist
+        if ($user?->email !== 'Employee') {
+            User::where('email', 'Employee')
+                ->where('name', 'Survey Staff')
+                ->delete();
+        }
+
         $allLockedFolderIds = Folder::allLockedFolderIds();
         $lockedFolderIdsForEmployee = $isAdmin ? [] : $allLockedFolderIds;
 

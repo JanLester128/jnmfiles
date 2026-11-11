@@ -7,6 +7,7 @@ import {
     Edit2,
     FileCheck2,
     Filter,
+    Info,
     PauseCircle,
     Plus,
     Printer,
@@ -459,6 +460,34 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                     )}
                 </div>
 
+                {/* Staff Note Banner: Work Logs are added/created by the Admin */}
+                <div
+                    className={`flex items-start sm:items-center justify-between gap-3 rounded-xl border px-4 py-3 text-xs ${
+                        isAdmin
+                            ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-950 dark:text-emerald-200'
+                            : 'border-sky-500/35 bg-sky-500/10 text-sky-950 dark:text-sky-200'
+                    }`}
+                >
+                    <div className="flex items-start sm:items-center gap-2.5">
+                        {isAdmin ? (
+                            <ShieldCheck className="size-4 text-emerald-600 shrink-0 mt-0.5 sm:mt-0" />
+                        ) : (
+                            <Info className="size-4 text-sky-600 shrink-0 mt-0.5 sm:mt-0" />
+                        )}
+                        <div>
+                            <span className="font-bold">
+                                {isAdmin ? 'Administrator Note: ' : 'Note for Staff: '}
+                            </span>
+                            <span>
+                                All Work Logs (<strong>1. Scheme/Type</strong>, <strong>2. Lot No.</strong>, <strong>3. Location</strong>, and <strong>4. Owner</strong>) are <strong>added and created by the Administrator</strong>.{' '}
+                                {isAdmin
+                                    ? 'You can add new work logs via the "Add Work Log" button and edit any column at any time.'
+                                    : 'As staff, you can update Progress/Status, Plan Completed date, Survey Type, Date of Survey, DLSD Downloaded, and click "✓ To Print" when ready.'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Summary Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div className="rounded-xl border border-border bg-card p-3.5 flex items-center justify-between">
@@ -695,13 +724,22 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                         ))}
                                                     </select>
                                                 ) : (
-                                                    <span
-                                                        className={`inline-flex items-center px-2.5 py-1 rounded-md border text-xs font-bold ${getWorkTypeBadgeClass(
-                                                            log.work_type
-                                                        )}`}
-                                                    >
-                                                        {log.work_type}
-                                                    </span>
+                                                    <div className="flex flex-col gap-1">
+                                                        <span
+                                                            className={`inline-flex items-center w-fit px-2.5 py-1 rounded-md border text-xs font-bold ${getWorkTypeBadgeClass(
+                                                                log.work_type
+                                                            )}`}
+                                                        >
+                                                            {log.work_type}
+                                                        </span>
+                                                        <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground font-medium">
+                                                            <ShieldCheck className="size-3 text-emerald-600 shrink-0" />
+                                                            <span>
+                                                                Added by Admin
+                                                                {log.creator?.name ? ` (${log.creator.name})` : ''}
+                                                            </span>
+                                                        </span>
+                                                    </div>
                                                 )}
                                             </td>
 

@@ -141,8 +141,8 @@ export default function DrivePage({
                     </div>
                 </div>
 
-                {/* Breadcrumb bar (only shown when inside a folder or project) */}
-                {(currentProject || breadcrumbs.length > 0) && (
+                {/* Breadcrumb bar with Back button (shown when inside a folder or project) */}
+                {(currentFolder || currentProject || breadcrumbs.length > 0) && (
                     <div className="flex items-center justify-between gap-4 flex-wrap">
                         <BreadcrumbNav
                             currentFolder={currentFolder}

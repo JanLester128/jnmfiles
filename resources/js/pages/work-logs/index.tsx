@@ -10,13 +10,12 @@ import {
     Info,
     PauseCircle,
     Plus,
-    Printer,
     RotateCcw,
     Search,
     ShieldCheck,
     Trash2,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -97,98 +96,39 @@ const DEFAULT_DLSD_OPTIONS = ['Yes', 'No'];
 function getWorkTypeBadgeClass(type: string): string {
     switch (type) {
         case 'SCHEME':
-            return 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/30';
+            return 'bg-indigo-600 text-white border-indigo-700 shadow-xs';
         case 'SURVEY RETURN':
-            return 'bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/30';
+            return 'bg-teal-600 text-white border-teal-700 shadow-xs';
         case 'SKETCH':
-            return 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30';
+            return 'bg-amber-500 text-white border-amber-600 shadow-xs';
         default:
-            return 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/30';
+            return 'bg-slate-700 text-white border-slate-800 shadow-xs';
     }
 }
 
 function getProgressBadgeClass(status: string): string {
     switch (status.toLowerCase()) {
         case 'complete':
-            return 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30';
+            return 'bg-emerald-600 text-white border-emerald-700 shadow-xs';
         case 'in progress':
-            return 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30';
+            return 'bg-sky-600 text-white border-sky-700 shadow-xs';
         case 'pending':
-            return 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30';
+            return 'bg-amber-500 text-white border-amber-600 shadow-xs';
         case 'file submitted':
-            return 'bg-violet-500/15 text-violet-700 dark:text-violet-300 border-violet-500/30';
+            return 'bg-violet-600 text-white border-violet-700 shadow-xs';
         case 'survey only':
-            return 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/30';
+            return 'bg-cyan-600 text-white border-cyan-700 shadow-xs';
         case 'pause':
-            return 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30';
+            return 'bg-rose-600 text-white border-rose-700 shadow-xs';
         default:
-            return 'bg-muted text-foreground border-border';
+            return 'bg-emerald-600 text-white border-emerald-700 shadow-xs';
     }
 }
 
 function getDlsdBadgeClass(val: string): string {
     return val.toLowerCase() === 'yes'
-        ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
-        : 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/30';
-}
-
-interface InlineTextCellProps {
-    initialValue: string;
-    placeholder: string;
-    ariaLabel: string;
-    disabled?: boolean;
-    className?: string;
-    onCommit: (nextValue: string) => void;
-}
-
-function InlineTextCell({
-    initialValue,
-    placeholder,
-    ariaLabel,
-    disabled = false,
-    className = '',
-    onCommit,
-}: InlineTextCellProps) {
-    const [value, setValue] = useState(initialValue);
-
-    useEffect(() => {
-        setValue(initialValue);
-    }, [initialValue]);
-
-    if (disabled) {
-        return (
-            <span className={`block px-2 py-1 text-xs ${className}`}>
-                {initialValue || <span className="text-muted-foreground/50 italic">—</span>}
-            </span>
-        );
-    }
-
-    const commitIfChanged = () => {
-        const trimmed = value.trim();
-        if (trimmed !== (initialValue || '').trim()) {
-            onCommit(trimmed);
-        }
-    };
-
-    return (
-        <input
-            type="text"
-            aria-label={ariaLabel}
-            value={value}
-            placeholder={placeholder}
-            onChange={(e) => setValue(e.target.value)}
-            onBlur={commitIfChanged}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                    e.currentTarget.blur();
-                } else if (e.key === 'Escape') {
-                    setValue(initialValue);
-                    e.currentTarget.blur();
-                }
-            }}
-            className={`w-full h-8 rounded-md border border-border/50 hover:border-border focus:border-emerald-500 bg-background/60 focus:bg-background px-2 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-colors ${className}`}
-        />
-    );
+        ? 'bg-emerald-600 text-white border-emerald-700 shadow-xs'
+        : 'bg-rose-600 text-white border-rose-700 shadow-xs';
 }
 
 export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPageProps) {
@@ -325,10 +265,10 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
 
     const handleInlineUpdate = (
         logId: number,
-        field: keyof WorkLogItem,
+        field: 'progress_status' | 'plan_completed' | 'dlsd_downloaded',
         value: string
     ) => {
-        const isDateField = field === 'date_of_survey' || field === 'plan_completed';
+        const isDateField = field === 'plan_completed';
 
         router.put(
             `/work-logs/${logId}`,
@@ -481,8 +421,8 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                             <span>
                                 All Work Logs (<strong>1. Scheme/Type</strong>, <strong>2. Lot No.</strong>, <strong>3. Location</strong>, and <strong>4. Owner</strong>) are <strong>added and created by the Administrator</strong>.{' '}
                                 {isAdmin
-                                    ? 'You can add new work logs via the "Add Work Log" button and edit any column at any time.'
-                                    : 'As staff, you can update Progress/Status, Plan Completed date, Survey Type, Date of Survey, DLSD Downloaded, and click "✓ To Print" when ready.'}
+                                    ? 'Rows are locked in the table to prevent accidental changes — click the "Edit" button on any row to update its details.'
+                                    : 'Rows are locked in the table to prevent accidental changes — click the "Edit" button on any row to update Progress/Status, Plan Completed date, Survey Type, Date of Survey, and DLSD Downloaded.'}
                             </span>
                         </div>
                     </div>
@@ -671,8 +611,8 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                     <th className="py-3 px-3 min-w-[135px] border-r border-emerald-800/40">
                                         9. DLSD DOWNLOADED
                                     </th>
-                                    <th className="py-3 px-3 text-right min-w-[175px]">
-                                        ACTIONS (✓ TO PRINT)
+                                    <th className="py-3 px-3 text-right min-w-[200px]">
+                                        ACTIONS (✓ TO PRINT / EDIT)
                                     </th>
                                 </tr>
                             </thead>
@@ -700,38 +640,17 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                             key={log.id}
                                             className="hover:bg-muted/40 transition-colors group"
                                         >
-                                            {/* 1st Column: Dropdown (SCHEME, SURVEY RETURN, SKETCH, OTHERS) - Admin editable even after recorded */}
-                                            <td className="py-2 px-2.5 border-r border-border/60">
-                                                {isAdmin ? (
-                                                    <select
-                                                        aria-label={`Work type for ${log.lot_no || log.id}`}
-                                                        value={log.work_type}
-                                                        onChange={(e) =>
-                                                            handleInlineUpdate(log.id, 'work_type', e.target.value)
-                                                        }
-                                                        className={`w-full h-8 rounded-md border px-2 text-xs font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 ${getWorkTypeBadgeClass(
+                                            {/* 1st Column: SCHEME / TYPE (Read-only badge in table; editable via Edit button) */}
+                                            <td className="py-2.5 px-3 border-r border-border/60">
+                                                <div className="flex flex-col gap-1">
+                                                    <span
+                                                        className={`inline-flex items-center w-fit px-2.5 py-1 rounded-md border text-xs font-bold ${getWorkTypeBadgeClass(
                                                             log.work_type
                                                         )}`}
                                                     >
-                                                        {workTypes.map((t) => (
-                                                            <option
-                                                                key={t}
-                                                                value={t}
-                                                                className="bg-background text-foreground font-semibold"
-                                                            >
-                                                                {t}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                ) : (
-                                                    <div className="flex flex-col gap-1">
-                                                        <span
-                                                            className={`inline-flex items-center w-fit px-2.5 py-1 rounded-md border text-xs font-bold ${getWorkTypeBadgeClass(
-                                                                log.work_type
-                                                            )}`}
-                                                        >
-                                                            {log.work_type}
-                                                        </span>
+                                                        {log.work_type}
+                                                    </span>
+                                                    {!isAdmin && (
                                                         <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground font-medium">
                                                             <ShieldCheck className="size-3 text-emerald-600 shrink-0" />
                                                             <span>
@@ -739,53 +658,39 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                                 {log.creator?.name ? ` (${log.creator.name})` : ''}
                                                             </span>
                                                         </span>
-                                                    </div>
+                                                    )}
+                                                </div>
+                                            </td>
+
+                                            {/* 2nd Column: LOT No. (Read-only in table; editable via Edit button) */}
+                                            <td className="py-2.5 px-3 border-r border-border/60 font-semibold text-foreground">
+                                                {log.lot_no ? (
+                                                    <span>{log.lot_no}</span>
+                                                ) : (
+                                                    <span className="text-muted-foreground/50 italic">—</span>
                                                 )}
                                             </td>
 
-                                            {/* 2nd Column: LOT No. - Admin editable inline even after recorded */}
-                                            <td className="py-2 px-2.5 border-r border-border/60">
-                                                <InlineTextCell
-                                                    initialValue={log.lot_no}
-                                                    placeholder="Lot No..."
-                                                    ariaLabel={`Lot No for row ${log.id}`}
-                                                    disabled={!isAdmin}
-                                                    className="font-semibold"
-                                                    onCommit={(val) =>
-                                                        handleInlineUpdate(log.id, 'lot_no', val)
-                                                    }
-                                                />
+                                            {/* 3rd Column: LOCATION (Read-only in table; editable via Edit button) */}
+                                            <td className="py-2.5 px-3 border-r border-border/60 text-foreground">
+                                                {log.location ? (
+                                                    <span>{log.location}</span>
+                                                ) : (
+                                                    <span className="text-muted-foreground/50 italic">—</span>
+                                                )}
                                             </td>
 
-                                            {/* 3rd Column: LOCATION - Admin editable inline even after recorded */}
-                                            <td className="py-2 px-2.5 border-r border-border/60">
-                                                <InlineTextCell
-                                                    initialValue={log.location}
-                                                    placeholder="Location..."
-                                                    ariaLabel={`Location for row ${log.id}`}
-                                                    disabled={!isAdmin}
-                                                    onCommit={(val) =>
-                                                        handleInlineUpdate(log.id, 'location', val)
-                                                    }
-                                                />
+                                            {/* 4th Column: Owner (Read-only in table; editable via Edit button) */}
+                                            <td className="py-2.5 px-3 border-r border-border/60 font-medium text-foreground">
+                                                {log.owner ? (
+                                                    <span>{log.owner}</span>
+                                                ) : (
+                                                    <span className="text-muted-foreground/50 italic">—</span>
+                                                )}
                                             </td>
 
-                                            {/* 4th Column: Owner - Admin editable inline even after recorded */}
-                                            <td className="py-2 px-2.5 border-r border-border/60">
-                                                <InlineTextCell
-                                                    initialValue={log.owner}
-                                                    placeholder="Owner..."
-                                                    ariaLabel={`Owner for row ${log.id}`}
-                                                    disabled={!isAdmin}
-                                                    className="font-medium"
-                                                    onCommit={(val) =>
-                                                        handleInlineUpdate(log.id, 'owner', val)
-                                                    }
-                                                />
-                                            </td>
-
-                                            {/* 5th Column: Progress/Status Dropdown */}
-                                            <td className="py-2 px-2.5 border-r border-border/60">
+                                            {/* 5th Column: Progress/Status (Quick-editable dropdown, plain white with stroke) */}
+                                            <td className="py-2.5 px-3 border-r border-border/60">
                                                 <select
                                                     aria-label={`Progress status for ${log.lot_no || log.id}`}
                                                     value={log.progress_status}
@@ -796,15 +701,13 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                             e.target.value
                                                         )
                                                     }
-                                                    className={`w-full h-8 rounded-md border px-2 text-xs font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 ${getProgressBadgeClass(
-                                                        log.progress_status
-                                                    )}`}
+                                                    className="w-full h-8 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-400 dark:hover:border-slate-600 px-2.5 text-xs font-medium text-slate-900 dark:text-slate-100 cursor-pointer shadow-2xs transition-colors focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-400/30"
                                                 >
                                                     {progressStatuses.map((s) => (
                                                         <option
                                                             key={s}
                                                             value={s}
-                                                            className="bg-background text-foreground font-semibold"
+                                                            className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-medium"
                                                         >
                                                             {s}
                                                         </option>
@@ -812,8 +715,8 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                 </select>
                                             </td>
 
-                                            {/* 6th Column: Plan Completed (DATE input) */}
-                                            <td className="py-2 px-2.5 border-r border-border/60 font-mono text-xs text-foreground">
+                                            {/* 6th Column: Plan Completed (Quick-editable date input, plain white with stroke) */}
+                                            <td className="py-2.5 px-3 border-r border-border/60 font-mono text-xs">
                                                 <input
                                                     type="date"
                                                     aria-label={`Plan completed date for ${log.lot_no || log.id}`}
@@ -825,51 +728,32 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                             e.target.value
                                                         )
                                                     }
-                                                    className="w-full h-8 rounded-md border border-border/50 hover:border-border focus:border-emerald-500 bg-background/60 focus:bg-background px-1.5 text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+                                                    className="w-full h-8 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-400 dark:hover:border-slate-600 px-2 text-xs font-mono font-medium text-slate-900 dark:text-slate-100 cursor-pointer shadow-2xs transition-colors focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-400/30"
                                                 />
                                             </td>
 
-                                            {/* 7th Column: SURVEY Dropdown */}
-                                            <td className="py-2 px-2.5 border-r border-border/60">
-                                                <select
-                                                    aria-label={`Survey type for ${log.lot_no || log.id}`}
-                                                    value={log.survey_type}
-                                                    onChange={(e) =>
-                                                        handleInlineUpdate(log.id, 'survey_type', e.target.value)
-                                                    }
-                                                    className="w-full h-8 rounded-md border border-border bg-muted/60 hover:bg-muted px-2 text-xs font-semibold text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                                >
-                                                    {surveyTypes.map((s) => (
-                                                        <option
-                                                            key={s}
-                                                            value={s}
-                                                            className="bg-background text-foreground font-semibold"
-                                                        >
-                                                            {s}
-                                                        </option>
-                                                    ))}
-                                                </select>
+                                            {/* 7th Column: SURVEY (Locked badge in table; editable via Edit button) */}
+                                            <td className="py-2.5 px-3 border-r border-border/60">
+                                                <span className="inline-flex items-center rounded-md border border-sky-500/40 bg-sky-500/10 px-2.5 py-1 text-xs font-bold text-sky-900 dark:text-sky-200">
+                                                    {log.survey_type}
+                                                </span>
                                             </td>
 
-                                            {/* 8th Column: DATE OF SURVEY */}
-                                            <td className="py-2 px-2.5 border-r border-border/60 font-mono text-xs text-foreground">
-                                                <input
-                                                    type="date"
-                                                    aria-label={`Date of survey for ${log.lot_no || log.id}`}
-                                                    value={log.date_of_survey || ''}
-                                                    onChange={(e) =>
-                                                        handleInlineUpdate(
-                                                            log.id,
-                                                            'date_of_survey',
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    className="w-full h-8 rounded-md border border-border/50 hover:border-border focus:border-emerald-500 bg-background/60 focus:bg-background px-1.5 text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
-                                                />
+                                            {/* 8th Column: DATE OF SURVEY (Locked date badge in table; editable via Edit button) */}
+                                            <td className="py-2.5 px-3 border-r border-border/60 font-mono text-xs">
+                                                {log.date_of_survey ? (
+                                                    <span className="inline-flex items-center rounded-md border border-sky-500/40 bg-sky-50 dark:bg-sky-950/60 px-2.5 py-1 font-semibold text-sky-900 dark:text-sky-200">
+                                                        {log.date_of_survey}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-muted-foreground/50 italic font-sans">
+                                                        Not set
+                                                    </span>
+                                                )}
                                             </td>
 
-                                            {/* 9th Column: DLSD DOWNLOADED Dropdown (Yes or No) */}
-                                            <td className="py-2 px-2.5 border-r border-border/60">
+                                            {/* 9th Column: DLSD DOWNLOADED (Quick-editable Yes/No dropdown, plain white with stroke) */}
+                                            <td className="py-2.5 px-3 border-r border-border/60">
                                                 <select
                                                     aria-label={`DLSD downloaded for ${log.lot_no || log.id}`}
                                                     value={log.dlsd_downloaded}
@@ -880,15 +764,13 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                             e.target.value
                                                         )
                                                     }
-                                                    className={`w-full h-8 rounded-md border px-2 text-xs font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 ${getDlsdBadgeClass(
-                                                        log.dlsd_downloaded
-                                                    )}`}
+                                                    className="w-full h-8 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-400 dark:hover:border-slate-600 px-2.5 text-xs font-medium text-slate-900 dark:text-slate-100 cursor-pointer shadow-2xs transition-colors focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-400/30"
                                                 >
                                                     {dlsdOptions.map((d) => (
                                                         <option
                                                             key={d}
                                                             value={d}
-                                                            className="bg-background text-foreground font-semibold"
+                                                            className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-medium"
                                                         >
                                                             {d}
                                                         </option>
@@ -896,8 +778,8 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                 </select>
                                             </td>
 
-                                            {/* Actions (Check to send to TO PRINT / PRINTED + Edit + Delete) */}
-                                            <td className="py-2 px-2.5 text-right">
+                                            {/* Actions (Check to send to TO PRINT / PRINTED + Edit button + Delete) */}
+                                            <td className="py-2.5 px-3 text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
                                                     {log.print_status ? (
                                                         <Link
@@ -929,12 +811,13 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                     <Button
                                                         type="button"
                                                         size="sm"
-                                                        variant="ghost"
+                                                        variant="outline"
                                                         onClick={() => openEditModal(log)}
-                                                        className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
-                                                        title="Edit Row"
+                                                        className="h-7 px-2.5 text-[11px] font-semibold gap-1 border-sky-500/50 text-sky-700 dark:text-sky-300 hover:bg-sky-500/15"
+                                                        title="Click to edit this Work Log entry"
                                                     >
                                                         <Edit2 className="size-3.5" />
+                                                        <span>Edit</span>
                                                     </Button>
                                                     {isAdmin && (
                                                         <Button
@@ -964,8 +847,8 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                         </span>
                         <span>
                             {isAdmin
-                                ? 'Admin Mode: All 9 columns (including Scheme/Type, Lot No., Location, and Owner) remain editable after recording.'
-                                : 'Staff Mode: Columns 1–4 are set by Admin; you can update Progress/Status, Plan Completed date, Survey, Survey Date, and DLSD Downloaded.'}
+                                ? 'Admin Mode: Click the "Edit" button on any row to update Columns 1–9.'
+                                : 'Staff Mode: Click the "Edit" button on any row to update Columns 5–9 (Columns 1–4 are set by Admin).'}
                         </span>
                     </div>
                 </div>

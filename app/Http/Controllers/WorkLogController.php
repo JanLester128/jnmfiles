@@ -86,7 +86,7 @@ class WorkLogController extends Controller
         $workLogs = WorkLog::with(['creator:id,name', 'updater:id,name'])
             ->latest()
             ->get()
-            ->map(fn (WorkLog $log): array => $this->formatLog($log));
+            ->map(fn(WorkLog $log): array => $this->formatLog($log));
 
         return Inertia::render('work-logs/index', [
             'workLogs' => $workLogs,
@@ -112,7 +112,7 @@ class WorkLogController extends Controller
             ->orderByRaw("CASE WHEN print_status = 'TO PRINT' THEN 0 ELSE 1 END")
             ->latest('updated_at')
             ->get()
-            ->map(fn (WorkLog $log): array => $this->formatLog($log));
+            ->map(fn(WorkLog $log): array => $this->formatLog($log));
 
         return Inertia::render('work-logs/print-queue', [
             'printLogs' => $printLogs,

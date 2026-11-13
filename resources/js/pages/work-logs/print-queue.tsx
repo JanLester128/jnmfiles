@@ -33,22 +33,22 @@ const DEFAULT_PRINT_STATUSES = ['TO PRINT', 'PRINTED'];
 function getWorkTypeBadgeClass(type: string): string {
     switch (type) {
         case 'SCHEME':
-            return 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/30';
+            return 'bg-indigo-600 text-white border-indigo-700 shadow-xs';
         case 'SURVEY RETURN':
-            return 'bg-teal-500/10 text-teal-700 dark:text-teal-300 border-teal-500/30';
+            return 'bg-teal-600 text-white border-teal-700 shadow-xs';
         case 'SKETCH':
-            return 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30';
+            return 'bg-amber-500 text-white border-amber-600 shadow-xs';
         default:
-            return 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/30';
+            return 'bg-slate-700 text-white border-slate-800 shadow-xs';
     }
 }
 
 function getPrintStatusBadgeClass(status?: string | null): string {
     if (status === 'PRINTED') {
-        return 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/40';
+        return 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700 shadow-xs';
     }
 
-    return 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/40';
+    return 'bg-amber-500 hover:bg-amber-600 text-white border-amber-600 shadow-xs';
 }
 
 export default function WorkLogsPrintQueue({
@@ -379,7 +379,11 @@ export default function WorkLogsPrintQueue({
                                                                 e.target.value
                                                             )
                                                         }
-                                                        className="w-full h-8 rounded-md border border-border/60 hover:border-border focus:border-emerald-500 bg-background/60 focus:bg-background px-2 text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+                                                        className={`w-full h-8 rounded-md border-2 px-2 text-xs font-mono font-semibold cursor-pointer shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
+                                                            log.date_printed
+                                                                ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 hover:bg-emerald-100'
+                                                                : 'border-emerald-500/80 bg-white dark:bg-slate-900 text-foreground hover:border-emerald-600 hover:bg-emerald-50/40'
+                                                        }`}
                                                     />
                                                 </td>
 

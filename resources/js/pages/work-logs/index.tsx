@@ -611,7 +611,7 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                     <th className="py-3 px-3 min-w-[135px] border-r border-emerald-800/40">
                                         9. DLSD DOWNLOADED
                                     </th>
-                                    <th className="py-3 px-3 text-right min-w-[200px]">
+                                    <th className="py-3 px-3 text-right min-w-[215px] whitespace-nowrap">
                                         ACTIONS (✓ TO PRINT / EDIT)
                                     </th>
                                 </tr>
@@ -641,10 +641,10 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                             className="hover:bg-muted/40 transition-colors group"
                                         >
                                             {/* 1st Column: SCHEME / TYPE (Read-only badge in table; editable via Edit button) */}
-                                            <td className="py-2.5 px-3 border-r border-border/60">
+                                            <td className="py-2.5 px-3 border-r border-border/60 whitespace-nowrap">
                                                 <div className="flex flex-col gap-1">
                                                     <span
-                                                        className={`inline-flex items-center w-fit px-2.5 py-1 rounded-md border text-xs font-bold ${getWorkTypeBadgeClass(
+                                                        className={`inline-flex items-center w-fit px-2.5 py-1 rounded-md border text-xs font-bold whitespace-nowrap ${getWorkTypeBadgeClass(
                                                             log.work_type
                                                         )}`}
                                                     >
@@ -779,19 +779,19 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                             </td>
 
                                             {/* Actions (Check to send to TO PRINT / PRINTED + Edit button + Delete) */}
-                                            <td className="py-2.5 px-3 text-right">
-                                                <div className="flex items-center justify-end gap-1.5">
+                                            <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                                                <div className="inline-flex items-center justify-end gap-1.5 flex-nowrap">
                                                     {log.print_status ? (
                                                         <Link
                                                             href="/work-logs/print-queue"
                                                             title="View in TO PRINT / PRINTED page"
-                                                            className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                                                            className={`inline-flex items-center justify-center gap-1 h-7 px-2.5 rounded-md border text-[11px] font-semibold leading-none whitespace-nowrap shrink-0 transition-colors ${
                                                                 log.print_status === 'PRINTED'
                                                                     ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/25'
                                                                     : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/40 hover:bg-amber-500/25'
                                                             }`}
                                                         >
-                                                            <Check className="size-3" />
+                                                            <Check className="size-3 shrink-0" />
                                                             <span>{log.print_status}</span>
                                                         </Link>
                                                     ) : (
@@ -800,10 +800,10 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                             size="sm"
                                                             variant="outline"
                                                             onClick={() => handleSendToPrint(log)}
-                                                            className="h-7 px-2 text-[11px] font-semibold gap-1 border-emerald-500/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/15"
+                                                            className="h-7 px-2.5 text-[11px] font-semibold leading-none gap-1 whitespace-nowrap shrink-0 border-emerald-500/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/15"
                                                             title="Record this Lot No. in TO PRINT / PRINTED page"
                                                         >
-                                                            <Check className="size-3.5" />
+                                                            <Check className="size-3.5 shrink-0" />
                                                             <span>To Print</span>
                                                         </Button>
                                                     )}
@@ -813,10 +813,10 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                         size="sm"
                                                         variant="outline"
                                                         onClick={() => openEditModal(log)}
-                                                        className="h-7 px-2.5 text-[11px] font-semibold gap-1 border-sky-500/50 text-sky-700 dark:text-sky-300 hover:bg-sky-500/15"
+                                                        className="h-7 px-2.5 text-[11px] font-semibold leading-none gap-1 whitespace-nowrap shrink-0 border-sky-500/50 text-sky-700 dark:text-sky-300 hover:bg-sky-500/15"
                                                         title="Click to edit this Work Log entry"
                                                     >
-                                                        <Edit2 className="size-3.5" />
+                                                        <Edit2 className="size-3.5 shrink-0" />
                                                         <span>Edit</span>
                                                     </Button>
                                                     {isAdmin && (
@@ -825,7 +825,7 @@ export default function WorkLogsIndex({ workLogs = [], options }: WorkLogsPagePr
                                                             size="sm"
                                                             variant="ghost"
                                                             onClick={() => setDeletingLog(log)}
-                                                            className="h-7 w-7 p-0 text-rose-500 hover:text-rose-600 hover:bg-rose-500/10"
+                                                            className="h-7 w-7 p-0 shrink-0 text-rose-500 hover:text-rose-600 hover:bg-rose-500/10"
                                                             title="Delete Row"
                                                         >
                                                             <Trash2 className="size-3.5" />

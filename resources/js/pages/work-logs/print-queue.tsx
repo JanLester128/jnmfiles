@@ -294,15 +294,20 @@ export default function WorkLogsPrintQueue({
                                 ) : (
                                     filteredLogs.map((log) => {
                                         const currentStatus = log.print_status || 'TO PRINT';
+                                        const isPrinted = currentStatus === 'PRINTED';
                                         return (
                                             <tr
                                                 key={log.id}
-                                                className="hover:bg-muted/40 transition-colors"
+                                                className={`transition-colors ${
+                                                    isPrinted
+                                                        ? 'bg-emerald-50/90 hover:bg-emerald-100/80 dark:bg-emerald-950/30 dark:hover:bg-emerald-950/45'
+                                                        : 'hover:bg-muted/40'
+                                                }`}
                                             >
                                                 {/* Scheme / Type */}
-                                                <td className="py-2.5 px-3 border-r border-border/60">
+                                                <td className="py-2.5 px-3 border-r border-border/60 whitespace-nowrap">
                                                     <span
-                                                        className={`inline-flex items-center px-2.5 py-1 rounded-md border text-xs font-bold ${getWorkTypeBadgeClass(
+                                                        className={`inline-flex items-center px-2.5 py-1 rounded-md border text-xs font-bold whitespace-nowrap ${getWorkTypeBadgeClass(
                                                             log.work_type
                                                         )}`}
                                                     >
